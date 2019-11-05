@@ -1,0 +1,22 @@
+name: Katling CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Gradle build
+    runs-on: ubuntu-latest
+    container: zenika/kotlin
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+      - name: Run build and tests
+        run: ./gradlew build
+      - name: Run Semantic Release
+          uses: cycjimmy/semantic-release-action@v2
+          with:
+            extra_plugins: |
+              @semantic-release/git
+              @semantic-release/changelog
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
